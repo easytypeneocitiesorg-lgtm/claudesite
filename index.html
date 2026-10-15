@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Umbra Arcade</title>
+<style>
+:root{--bg:#08060D;--bg2:#100C19;--el:#191225;--p:#8B5CF6;--p2:#A78BFA;--pd:#5B21B6;--t:#F5F3FF;--t2:#A8A0B8;--bd:#302442;--cols:4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--t);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+button,input,select{font:inherit;color:inherit}
+button{background:var(--el);border:1px solid var(--bd);border-radius:8px;padding:8px 14px;cursor:pointer;min-height:40px}
+button:hover{border-color:var(--p)}button.pri{background:var(--p);border-color:var(--p);color:#fff;font-weight:600}button.pri:hover{background:var(--pd)}
+:focus-visible{outline:2px solid var(--p2);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;gap:10px;align-items:center;padding:10px 16px;background:rgba(8,6,13,.92);border-bottom:1px solid var(--bd)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.04em;cursor:pointer}
+.search{flex:1;max-width:520px;position:relative}.search input{width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:9px 34px 9px 12px;min-height:40px}
+.search .x{position:absolute;right:2px;top:2px;border:0;background:none;padding:6px 10px;min-height:0}
+#sug{position:absolute;left:0;right:0;top:46px;background:var(--el);border:1px solid var(--bd);border-radius:8px;display:none;overflow:hidden}
+#sug button{display:block;width:100%;text-align:left;border:0;border-radius:0}
+#nav{position:fixed;top:0;bottom:0;left:0;width:240px;z-index:30;background:var(--bg2);border-right:1px solid var(--bd);transform:translateX(-100%);transition:transform .2s;padding:calc(16px + env(safe-area-inset-top,0px)) 12px 16px;overflow:auto}
+#nav.open{transform:none}#scrim{position:fixed;inset:0;z-index:25;background:rgba(0,0,0,.55);display:none}#scrim.on{display:block}
+#nav a{display:block;padding:10px 12px;border-radius:8px;color:var(--t2);text-decoration:none;margin:2px 0}
+#nav a:hover{background:var(--el);color:var(--t)}#nav a.act{background:var(--pd);color:#fff}
+main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(34px,7vw,64px);line-height:1.05;margin:0 0 10px}h2{margin:28px 0 12px;font-size:20px}
+.hero{padding:7vh 0 4vh}.hero p{color:var(--t2);font-size:18px;max-width:520px}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.chip.on{background:var(--p);border-color:var(--p)}
+.grid{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:14px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(min(var(--cols),3),1fr)}}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--el);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-3px);border-color:var(--p)}
+.thumb{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;color:rgba(255,255,255,.85)}
+.cb{padding:10px 12px}.cb b{display:block}.cb small{color:var(--t2);display:block;margin-top:2px}
+.tag{display:inline-block;font-size:12px;color:var(--p2);border:1px solid var(--bd);border-radius:20px;padding:0 8px;margin:6px 4px 0 0}
+.empty{border:1px dashed var(--bd);border-radius:12px;padding:40px;text-align:center;color:var(--t2)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.bar select{background:var(--el);border:1px solid var(--bd);border-radius:8px;padding:8px}
+#stage{position:relative;background:#000;border:1px solid var(--bd);border-radius:12px;overflow:hidden;height:min(70vh,640px)}
+#stage iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+#ov{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;background:var(--bg2);text-align:center;padding:20px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd)}
+a.ext{color:var(--p2)}
+</style></head><body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div id="scrim"></div>
+<nav id="nav" aria-label="Main navigation"></nav>
+<header>
+<button id="menu" aria-label="Open navigation" aria-expanded="false">☰</button>
+<div class="logo" id="home" tabindex="0" role="link" aria-label="Umbra Arcade home"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#5B21B6"/><path d="M22 6a11 11 0 1 0 0 20 9 9 0 0 1 0-20z" fill="#08060D"/><circle cx="16" cy="16" r="14" fill="none" stroke="#A78BFA" stroke-width="2"/></svg><span>UMBRA</span></div>
+<div class="search"><input id="q" type="search" placeholder="Search games ( / )" aria-label="Search games" autocomplete="off"><button class="x" id="qx" aria-label="Clear search" hidden>✕</button><div id="sug"></div></div>
+</header>
+<main id="view"></main>
+<script>
+"use strict";
+// Registry: every url was taken from the open-source games list at github.com/leereilly/games (README "Play it now!" links).
+// Status for ALL entries: URL found, embedding unverified (no browser/iframe testing was possible when this was built).
+const S="URL found, embedding unverified";
+const G=[
+["2048","Puzzle","Slide matching tiles to reach 2048.","https://gabrielecirulli.github.io/2048/","Gabriele Cirulli",["numbers","classic"]],
+["Hex 2048","Puzzle","A hex-grid take on 2048.","https://jeffhou.github.io/hex-2048/","jeffhou",["numbers","hex"]],
+["Connect Four","Strategy","Connect Four against an AI opponent.","https://kenrick95.github.io/c4/demo/","kenrick95",["board","ai"]],
+["Custom Tetris","Puzzle","Classic falling blocks, with settings you can change.","https://ondras.github.io/custom-tetris/","ondras",["tetris","blocks"]],
+["Blockrain","Puzzle","Tetris-style falling blocks.","https://aerolab.github.io/blockrain.js/","Aerolab",["tetris","blocks"]],
+["Snake","Arcade","Classic Nokia-style snake.","https://rabiroshan.github.io/snake_game/","RabiRoshan",["snake","retro"]],
+["Space Invaders","Arcade","A remake of the arcade shooter.","https://strykerkkd.github.io/SpaceInvaders/","StrykerKKD",["shooter","retro"]],
+["Alien Invasion","Arcade","A scrolling space shooter demo.","https://cykod.github.io/AlienInvasion/","cykod",["shooter","space"]],
+["Arashi","Arcade","A clone of the Tempest arcade game.","https://stephank.github.io/arashi-js/","stephank",["vector","retro"]],
+["Spashal","Action","Survive the dangers lurking in space.","https://mrrar.github.io/spashal/","MrRar",["space","survival"]],
+["Hyperspace Garbage Collector","Action","Hyperspace waste management, game-jam style.","https://razh.github.io/game-off-2013/","razh",["space","jam"]],
+["Super Mario Bros (level 1)","Platformer","Level one built with the Backbone Game Engine.","https://martindrapeau.github.io/backbone-game-engine/super-mario-bros/index.html","Martin Drapeau",["retro","fan-made"]],
+["Drill Bunny","Platformer","A Phaser game from Ludum Dare 29.","https://dreamshowadventures.github.io/LudumDare29/","DreamShowAdventures",["phaser","jam"]],
+["Swap","Platformer","Switch which character you control to reach the goal.","https://nmoroze.github.io/swap/","nmoroze",["puzzle","jam"]],
+["Octocat Jump","Casual","A GitHub Game Off 2012 entry.","https://ogoshen.github.io/game-off-2012/","ogoshen",["jump","jam"]],
+["Astray","Casual","A WebGL maze game with physics.","https://wwwtyro.github.io/Astray/","wwwtyro",["maze","3d"]],
+["Maze 3D","Casual","Find your way through a 3D maze.","https://demonixis.github.io/Maze3D/","demonixis",["maze","3d"]],
+["Infectors","Puzzle","Sokoban-like puzzle built with Phaser.","https://satanas.github.io/infectors/","satanas",["sokoban","phaser"]],
+["Orbium","Puzzle","A modern take on the 90s puzzle Log!cal.","https://bni.github.io/orbium/","bni",["logic"]],
+["Zoko","Puzzle","A 3D Sokoban.","https://lulea.github.io/game-off-2012/","lulea",["sokoban","3d"]],
+["Pop Pop Win","Casual","Minesweeper reimagined, written in Dart.","https://dart-lang.github.io/sample-pop_pop_win/","Dart team",["minesweeper"]],
+["BananaBread","Action","A first-person shooter running in WebGL.","https://kripken.github.io/BananaBread/cube2/bb.html","kripken",["fps","webgl"]],
+["Diablo JS","Strategy","An isometric action-RPG experiment on canvas.","https://mitallast.github.io/diablo-js/","mitallast",["rpg","isometric"]],
+["3d.city","Strategy","A 3D city-builder.","https://lo-th.github.io/3d.city/index.html","lo-th",["builder","3d"]],
+["Project Cube","Casual","A voxel sandbox in HTML5.","https://b-train04.github.io/Project-Cube/projectCube/index.html","B-Train04",["voxel","sandbox"]]
+].map((g,i)=>({id:g[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/-$/,""),title:g[0],category:g[1],description:g[2],url:g[3],source:g[4]+" via GitHub Pages",tags:g[5],embeddingStatus:S,added:i}));
+const FEAT=["2048","connect-four","super-mario-bros-level-1","bananabread"].map(id=>G.find(g=>g.id===id));
+const OK=/^https:\/\/[a-z0-9-]+\.github\.io\//; // only known, intended game host
+
+// ---- storage ----
+const DEF={anim:true,cols:4,favs:[],recent:[]};
+let st;
+function load(){try{const r=JSON.parse(localStorage.getItem("umbra")||"{}");st={anim:typeof r.anim==="boolean"?r.anim:true,cols:[3,4,5].includes(r.cols)?r.cols:4,favs:Array.isArray(r.favs)?r.favs.filter(x=>G.some(g=>g.id===x)):[],recent:Array.isArray(r.recent)?r.recent.filter(x=>x&&G.some(g=>g.id===x.id)).slice(0,12):[]}}catch(e){st=JSON.parse(JSON.stringify(DEF))}}
+function save(){try{localStorage.setItem("umbra",JSON.stringify(st))}catch(e){}}
+load();
+
+// ---- helpers ----
+const $=s=>document.querySelector(s);
+function h(tag,a,...kids){const e=document.createElement(tag);for(const k in a||{}){if(k==="class")e.className=a[k];else if(k.startsWith("on"))e.addEventListener(k.slice(2),a[k]);else e.setAttribute(k,a[k])}kids.flat().forEach(c=>c!=null&&e.append(c.nodeType?c:document.createTextNode(c)));return e}
+const hue=s=>{let n=0;for(const c of s)n=(n*31+c.charCodeAt(0))%360;return 250+n%60};
+const go=p=>{location.hash=p};
+const reduced=matchMedia("(prefers-reduced-motion: reduce)");
+
+// ---- state ----
+let query="",cat="All",sort="az";
+const NAV=[["home","Home"],["all","All Games"],["featured","Featured"],["recent","Recently Played"],["favs","Favorites"],["categories","Categories"],["settings","Settings"],["about","About"]];
+
+function card(g){
+  const hv=hue(g.title);
+  return h("button",{class:"card",onclick:()=>go("play/"+g.id),"aria-label":"Play "+g.title},
+    h("div",{class:"thumb",style:`background:linear-gradient(135deg,hsl(${hv},60%,28%),hsl(${hv+30},70%,12%))`,"aria-hidden":"true"},g.title.replace(/[^A-Za-z0-9 ]/g,"").split(" ").slice(0,2).map(w=>w[0]).join("")),
+    h("div",{class:"cb"},h("b",{},g.title),h("small",{},g.category+" · "+g.description),g.tags.map(t=>h("span",{class:"tag"},t)),st.favs.includes(g.id)?h("span",{class:"tag"},"★ favorite"):null));
+}
+const grid=l=>l.length?h("div",{class:"grid"},l.map(card)):h("div",{class:"empty"},"No games match.");
+function filtered(base){
+  const q=query.trim().toLowerCase();
+  let l=base.filter(g=>(cat==="All"||g.category===cat)&&(!q||(g.title+" "+g.description+" "+g.tags.join(" ")).toLowerCase().includes(q)));
+  const last=id=>(st.recent.find(r=>r.id===id)||{t:0}).t;
+  if(sort==="az")l.sort((a,b)=>a.title.localeCompare(b.title));
+  if(sort==="new")l.sort((a,b)=>b.added-a.added);
+  if(sort==="played")l.sort((a,b)=>last(b.id)-last(a.id));
+  if(sort==="fav")l.sort((a,b)=>st.favs.includes(b.id)-st.favs.includes(a.id));
+  return l;
+}
+const cats=()=>[...new Set(G.map(g=>g.category))].sort();
+function library(base,title,intro){
+  const chips=h("div",{class:"chips",role:"group","aria-label":"Categories"},["All",...cats()].map(c=>{
+    const n=c==="All"?base.length:base.filter(g=>g.category===c).length;
+    return n||c==="All"?h("button",{class:"chip"+(cat===c?" on":""),"aria-pressed":cat===c,onclick:()=>{cat=c;render()}},c+" ("+n+")"):null}));
+  const sel=h("select",{"aria-label":"Sort",onchange:e=>{sort=e.target.value;render()}},[["az","A–Z"],["new","Recently added"],["played","Recently played"],["fav","Favorites first"]].map(o=>{const x=h("option",{value:o[0]},o[1]);if(sort===o[0])x.selected=true;return x}));
+  return h("div",{},h("h1",{style:"font-size:32px"},title),intro?h("p",{style:"color:var(--t2)"},intro):null,chips,h("div",{class:"bar"},sel,h("span",{style:"color:var(--t2)"},filtered(base).length+" shown")),h("div",{style:"height:12px"}),grid(filtered(base)));
+}
+function empty(msg){return h("div",{class:"empty"},msg,h("div",{class:"row",style:"justify-content:center"},h("button",{class:"pri",onclick:()=>go("all")},"Browse games")))}
+
+function player(id){
+  const g=G.find(x=>x.id===id);
+  if(!g)return empty("That game isn't in the library.");
+  const r=st.recent.filter(x=>x.id!==id);r.unshift({id,t:Date.now()});st.recent=r.slice(0,12);save();
+  const ov=h("div",{id:"ov"},h("div",{},"Loading "+g.title+"…"));
+  const stage=h("div",{id:"stage"});
+  const fr=h("iframe",{title:g.title,loading:"lazy",referrerpolicy:"no-referrer",allow:"fullscreen; gamepad; autoplay",sandbox:"allow-scripts allow-same-origin allow-pointer-lock allow-popups"});
+  let ready=false;
+  const fail=()=>{ov.replaceChildren(h("b",{},"This game didn't load here."),h("div",{style:"color:var(--t2);max-width:420px"},"The host may block embedding, or the page is unavailable. Nothing was bypassed."),h("a",{class:"ext",href:g.url,target:"_blank",rel:"noopener noreferrer"},"Open "+g.title+" on its own site ↗"),h("button",{onclick:reload},"Try again"));ov.style.display="flex"};
+  const reload=()=>{ready=false;ov.replaceChildren(h("div",{},"Loading "+g.title+"…"));ov.style.display="flex";fr.src="about:blank";setTimeout(()=>{fr.src=g.url},50);arm()};
+  let tm;const arm=()=>{clearTimeout(tm);tm=setTimeout(()=>{if(!ready)fail()},15000)};
+  fr.addEventListener("load",()=>{if(fr.src&&fr.src!=="about:blank"){ready=true;clearTimeout(tm);ov.style.display="none"}});
+  stage.append(fr,ov);
+  if(!OK.test(g.url))fail();else{fr.src=g.url;arm()}
+  const fav=h("button",{"aria-pressed":st.favs.includes(id),onclick:e=>{const i=st.favs.indexOf(id);i<0?st.favs.push(id):st.favs.splice(i,1);save();e.target.textContent=st.favs.includes(id)?"★ Favorited":"☆ Favorite";e.target.setAttribute("aria-pressed",st.favs.includes(id))}},st.favs.includes(id)?"★ Favorited":"☆ Favorite");
+  const fs=h("button",{onclick:()=>{document.fullscreenElement?document.exitFullscreen():stage.requestFullscreen?stage.requestFullscreen().catch(()=>{}):0}},"⛶ Fullscreen");
+  if(!document.fullscreenEnabled)fs.hidden=true;
+  const rel=G.filter(x=>x.category===g.category&&x.id!==id).slice(0,4);
+  return h("div",{},h("div",{class:"bar",style:"margin-bottom:12px"},h("button",{onclick:()=>history.length>1?history.back():go("all")},"← Back"),h("h1",{style:"font-size:26px;margin:0 8px"},g.title),fav,h("button",{onclick:reload},"↻ Reload"),fs),stage,
+    h("p",{},g.description),h("p",{style:"color:var(--t2)"},"Source: "+g.source+" · ",h("a",{class:"ext",href:g.url,target:"_blank",rel:"noopener noreferrer"},"open original ↗"),h("br"),"Embedding status: "+g.embeddingStatus),
+    rel.length?h("div",{},h("h2",{},"Related games"),grid(rel)):null);
+}
+
+function views(route){
+  const [r,arg]=route.split("/");
+  if(r==="play")return player(arg);
+  if(r==="all")return library(G,"All Games");
+  if(r==="featured")return h("div",{},h("h1",{style:"font-size:32px"},"Featured"),h("p",{style:"color:var(--t2)"},"Hand-picked from the library."),grid(FEAT));
+  if(r==="recent"){const l=st.recent.map(x=>G.find(g=>g.id===x.id)).filter(Boolean);return l.length?library(l,"Recently Played"):h("div",{},h("h1",{style:"font-size:32px"},"Recently Played"),empty("Nothing played yet."))}
+  if(r==="favs"){const l=G.filter(g=>st.favs.includes(g.id));return l.length?library(l,"Favorites"):h("div",{},h("h1",{style:"font-size:32px"},"Favorites"),empty("No favorites yet. Open a game and tap ☆."))}
+  if(r==="categories")return h("div",{},h("h1",{style:"font-size:32px"},"Categories"),h("div",{class:"grid"},cats().map(c=>h("button",{class:"card",onclick:()=>{cat=c;go("all")}},h("div",{class:"cb"},h("b",{},c),h("small",{},G.filter(g=>g.category===c).length+" games"))))));
+  if(r==="settings")return settings();
+  if(r==="about")return h("div",{},h("h1",{style:"font-size:32px"},"About"),h("p",{},"Umbra Arcade is a portal. It doesn't host or make any games: each one loads from its own public GitHub Pages site inside a sandboxed iframe."),h("p",{},"All "+G.length+" games are open-source browser games listed in the leereilly/games directory on GitHub. None have been tested in this site's iframe, so some may refuse to load; if one fails, use the link to open it on its own site."),h("p",{style:"color:var(--t2)"},"No accounts, tracking or backend. Favorites, history and settings stay in your browser."));
+  return home();
+}
+function home(){
+  return h("div",{},h("section",{class:"hero"},h("h1",{},"Play in the ",h("span",{style:"color:var(--p2)"},"dark.")),h("p",{},"A quiet hub for open-source browser games. "+G.length+" to play, no downloads."),
+    h("div",{class:"row"},h("button",{class:"pri",onclick:()=>go("all")},"Explore Games"),h("button",{onclick:()=>go("categories")},"Browse categories"),h("button",{onclick:()=>go("play/"+G[Math.floor(Math.random()*G.length)].id)},"Random game"))),
+    h("h2",{},"Featured"),grid(FEAT));
+}
+function settings(){
+  const row=(l,d,c)=>h("div",{class:"set"},h("div",{},h("b",{},l),h("div",{style:"color:var(--t2)"},d)),c);
+  return h("div",{},h("h1",{style:"font-size:32px"},"Settings"),
+    row("Background animation","Particles that follow your pointer.",h("input",{type:"checkbox","aria-label":"Background animation",checked:st.anim?"":null,onchange:e=>{st.anim=e.target.checked;save();bgSet()}})),
+    row("Grid density","Cards per row on large screens.",h("select",{"aria-label":"Grid density",onchange:e=>{st.cols=+e.target.value;save();applyCols()}},[3,4,5].map(n=>{const o=h("option",{value:n},n);if(st.cols===n)o.selected=true;return o}))),
+    row("Clear favorites","Remove all saved favorites.",h("button",{onclick:()=>{if(confirm("Clear all favorites?")){st.favs=[];save();render()}}},"Clear")),
+    row("Clear history","Remove recently played.",h("button",{onclick:()=>{if(confirm("Clear recently played history?")){st.recent=[];save();render()}}},"Clear")),
+    row("Reset everything","Favorites, history and preferences.",h("button",{onclick:()=>{if(confirm("Reset all saved data?")){st=JSON.parse(JSON.stringify(DEF));save();applyCols();bgSet();render()}}},"Reset")));
+}
+
+// ---- shell ----
+function renderNav(route){
+  const base=route.split("/")[0]||"home",nav=$("#nav");
+  nav.replaceChildren(h("div",{class:"logo",style:"margin:0 0 14px 6px"},"UMBRA ARCADE"),...NAV.map(n=>h("a",{href:"#"+n[0],class:(base===n[0]||(base==="play"&&n[0]==="all"))?"act":"","aria-current":base===n[0]?"page":null},n[1])));
+}
+function render(){
+  const route=location.hash.slice(1)||"home";
+  renderNav(route);closeNav();
+  const v=$("#view");v.replaceChildren(views(route));
+  document.title=(route.startsWith("play/")?(G.find(g=>g.id===route.slice(5))||{title:"Game"}).title+" · ":"")+"Umbra Arcade";
+}
+function openNav(){$("#nav").classList.add("open");$("#scrim").classList.add("on");$("#menu").setAttribute("aria-expanded","true");$("#nav a").focus()}
+function closeNav(){$("#nav").classList.remove("open");$("#scrim").classList.remove("on");$("#menu").setAttribute("aria-expanded","false")}
+const applyCols=()=>document.documentElement.style.setProperty("--cols",st.cols);
+$("#menu").onclick=()=>$("#nav").classList.contains("open")?closeNav():openNav();
+$("#scrim").onclick=closeNav;$("#home").onclick=()=>go("home");
+$("#home").onkeydown=e=>{if(e.key==="Enter")go("home")};
+addEventListener("hashchange",render);
+const q=$("#q"),qx=$("#qx"),sug=$("#sug");
+function sugs(){
+  const t=q.value.trim().toLowerCase();
+  const l=(t?G.filter(g=>g.title.toLowerCase().includes(t)):G.slice(0,5)).slice(0,5);
+  sug.replaceChildren(...l.map(g=>h("button",{onmousedown:e=>{e.preventDefault();q.value="";query="";qx.hidden=true;sug.style.display="none";go("play/"+g.id)}},g.title)));
+  sug.style.display=l.length?"block":"none";
+}
+q.addEventListener("input",()=>{query=q.value;qx.hidden=!q.value.trim();sugs();if(!/^(all|recent|favs)/.test(location.hash.slice(1)))go("all");else render()});
+q.addEventListener("focus",sugs);q.addEventListener("blur",()=>sug.style.display="none");
+q.addEventListener("keydown",e=>{if(e.key==="Enter"){sug.style.display="none";go("all");render()}});
+qx.onclick=()=>{q.value="";query="";qx.hidden=true;render();q.focus()};
+addEventListener("keydown",e=>{
+  if(e.key==="/"&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();q.focus()}
+  if(e.key==="Escape")closeNav();
+});
+
+// ---- background: pointer-reactive particles ----
+const cv=$("#bg"),cx=cv.getContext("2d");let W,H,P=[],raf=0,mx=-999,my=-999;
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight;P=Array.from({length:Math.min(70,Math.floor(W*H/22000))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.6+.4}))}
+function frame(){
+  cx.clearRect(0,0,W,H);
+  for(const p of P){
+    const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);
+    if(d<120){p.vx+=dx/d*.04;p.vy+=dy/d*.04}
+    p.vx*=.99;p.vy*=.99;p.x=(p.x+p.vx+W)%W;p.y=(p.y+p.vy+H)%H;
+    cx.fillStyle="rgba(167,139,250,.55)";cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.3);cx.fill();
+  }
+  raf=requestAnimationFrame(frame);
+}
+function bgSet(){
+  cancelAnimationFrame(raf);cx.clearRect(0,0,W||0,H||0);
+  if(st.anim&&!reduced.matches&&!document.hidden){size();raf=requestAnimationFrame(frame)}
+}
+addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY});
+addEventListener("pointerleave",()=>{mx=my=-999});
+addEventListener("resize",()=>{if(st.anim&&!reduced.matches)size()});
+document.addEventListener("visibilitychange",bgSet);reduced.addEventListener("change",bgSet);
+
+applyCols();bgSet();render();
+</script></body></html>
