@@ -17,8 +17,8 @@ or open `index.html` in a browser.
 3. Framework Preset: **Other**. Leave build command and output directory empty. Deploy.
 
 ## Games
-All entries come from the "Play it now!" links in https://github.com/leereilly/games.
+The first 25 come from the "Play it now!" links in https://github.com/leereilly/games. The next 31 load from a third-party mirror (db.duck.exampredictor.org) that this project does not control.
 Edit the `G` array near the top of the script in `index.html` to add or remove games.
-Only `https://*.github.io/` URLs pass the `OK` check in the player; widen that regex if you add other hosts.
+Only `*.github.io` and the mirror host URLs pass the `OK` check in the player; widen that regex if you add other hosts.
 
 Embedding status: every game is **URL found, embedding unverified**. Test each one after deploying and replace any that refuse to load (the site shows a fallback link to the original).

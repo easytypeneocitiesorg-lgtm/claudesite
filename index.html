@@ -39,7 +39,7 @@ h1{font-size:clamp(34px,7vw,64px);line-height:1.05;margin:0 0 10px}h2{margin:28p
 #ov{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;background:var(--bg2);text-align:center;padding:20px}
 .set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd)}
 a.ext{color:var(--p2)}
-</style></head><body>
+.splash{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px}.splash h1{font-size:clamp(40px,10vw,92px);letter-spacing:.08em;margin:10px 0 0}.splash p{color:var(--t2);font-size:18px;margin:0 0 18px}body.home .search{visibility:hidden}</style></head><body>
 <canvas id="bg" aria-hidden="true"></canvas>
 <div id="scrim"></div>
 <nav id="nav" aria-label="Main navigation"></nav>
@@ -79,10 +79,41 @@ const G=[
 ["BananaBread","Action","A first-person shooter running in WebGL.","https://kripken.github.io/BananaBread/cube2/bb.html","kripken",["fps","webgl"]],
 ["Diablo JS","Strategy","An isometric action-RPG experiment on canvas.","https://mitallast.github.io/diablo-js/","mitallast",["rpg","isometric"]],
 ["3d.city","Strategy","A 3D city-builder.","https://lo-th.github.io/3d.city/index.html","lo-th",["builder","3d"]],
-["Project Cube","Casual","A voxel sandbox in HTML5.","https://b-train04.github.io/Project-Cube/projectCube/index.html","B-Train04",["voxel","sandbox"]]
-].map((g,i)=>({id:g[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/-$/,""),title:g[0],category:g[1],description:g[2],url:g[3],source:g[4]+" via GitHub Pages",tags:g[5],embeddingStatus:S,added:i}));
+["Project Cube","Casual","A voxel sandbox in HTML5.","https://b-train04.github.io/Project-Cube/projectCube/index.html","B-Train04",["voxel","sandbox"]],
+["Drift Boss","Racing","Tap to steer a block car along a twisting road.","https://db.duck.exampredictor.org/html/drift_boss/index.html","Mirror",["one-tap", "drift"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Snow Rider 3D","Racing","Slide a sled down a snowy slope.","https://db.duck.exampredictor.org/html/snow_rider_3d/index.html","Mirror",["sled", "3d"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Race Survival Arena King","Racing","Arena car combat and survival.","https://db.duck.exampredictor.org/html/race_survival_arena_king/index.html","Mirror",["cars", "arena"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Drive Mad","Racing","Drive over wild obstacle courses.","https://db.duck.exampredictor.org/html/drive_mad/index.html","Mirror",["physics", "cars"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Slope","Arcade","Roll a ball down an endless 3D slope.","https://db.duck.exampredictor.org/html/slope/index.html","Mirror",["3d", "endless"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Gun Spin","Action","Use recoil to spin and shoot your way through.","https://db.duck.exampredictor.org/html/gun_spin/index.html","Mirror",["shooter", "physics"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Ragdoll Archers","Action","Physics-based archery duels.","https://db.duck.exampredictor.org/html/ragdoll_archers/index.html","Mirror",["archery", "ragdoll"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Gladihoppers","Action","Ragdoll gladiator battles.","https://db.duck.exampredictor.org/html/gladihoppers/index.html","Mirror",["ragdoll", "fighting"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Ragdoll Hit","Action","Ragdoll shooting challenges.","https://db.duck.exampredictor.org/html/ragdoll_hit/index.html","Mirror",["ragdoll", "shooter"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Funny Shooter 2","Action","Over-the-top first-person shooting.","https://db.duck.exampredictor.org/html/funny_shooter_2/index.html","Mirror",["fps", "shooter"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Deadly Descent","Action","Survive a dangerous descent.","https://db.duck.exampredictor.org/html/deadly_descent/index.html","Mirror",["survival", "horror"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Time Shooter 2","Action","Time moves only when you do.","https://db.duck.exampredictor.org/html/time_shooter_2/index.html","Mirror",["shooter", "time"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Crazy Cattle 3D","Action","Cattle chaos in 3D arenas.","https://db.duck.exampredictor.org/html/crazycattle3d/index.html","Mirror",["3d", "arena"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Arcane Archer","Action","Fantasy archery.","https://db.duck.exampredictor.org/html/arcane_archer/index.html","Mirror",["archery", "fantasy"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Archer Master 3D: Castle Defender","Action","Defend your castle with a bow.","https://db.duck.exampredictor.org/html/archer_master_3d_castle_defender/index.html","Mirror",["archery", "defense"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Tabs","Strategy","Totally accurate battle-style unit fights.","https://db.duck.exampredictor.org/html/tabs/index.html","Mirror",["battle", "physics"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Level Devil","Platformer","A platformer where the level fights back.","https://db.duck.exampredictor.org/html/level_devil/index.html","Mirror",["trolling", "trap"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Ovo","Platformer","Fast parkour platformer.","https://db.duck.exampredictor.org/html/ovo/index.html","Mirror",["parkour", "speed"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Ovo 3D","Platformer","Parkour in 3D.","https://db.duck.exampredictor.org/html/ovo_3d/index.html","Mirror",["parkour", "3d"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Cluster Rush","Platformer","Jump between moving trucks.","https://db.duck.exampredictor.org/html/cluster_rush/index.html","Mirror",["trucks", "parkour"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Stickman Hook","Platformer","Swing a stickman from hook to hook.","https://db.duck.exampredictor.org/html/stickman_hook/index.html","Mirror",["swing", "stickman"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Blocky Puzzle","Puzzle","Fit blocks onto the board.","https://db.duck.exampredictor.org/html/blocky_puzzle/index.html","Mirror",["blocks"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Idle Ants","Idle & Incremental","Grow your ant colony.","https://db.duck.exampredictor.org/html/idle_ants/index.html","Mirror",["idle", "clicker"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Golf Orbit","Sports","Golf across orbiting planets.","https://db.duck.exampredictor.org/html/golf_orbit/index.html","Mirror",["golf", "space"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Basketball Legends","Sports","Two-player basketball.","https://db.duck.exampredictor.org/html/basketball_legends/index.html","Mirror",["basketball", "2-player"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Football Legends","Sports","Arcade football matches.","https://db.duck.exampredictor.org/html/football_legends/index.html","Mirror",["football"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Football Bros","Sports","Quick football matches.","https://db.duck.exampredictor.org/html/football_bros/index.html","Mirror",["football"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Baseball Bros","Sports","Arcade baseball.","https://db.duck.exampredictor.org/html/baseball_bros/index.html","Mirror",["baseball"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Wrestle Bros","Sports","Ragdoll-style wrestling.","https://db.duck.exampredictor.org/html/wrestle_bros/index.html","Mirror",["wrestling"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Rocket Soccer Derby","Sports","Rocket-powered car soccer.","https://db.duck.exampredictor.org/html/rocket_soccer_derby/index.html","Mirror",["cars", "soccer"]," via third-party mirror (db.duck.exampredictor.org)"],
+["Bridge Race","Casual","Collect bricks and race across bridges.","https://db.duck.exampredictor.org/html/bridge_race/index.html","Mirror",["runner", "3d"]," via third-party mirror (db.duck.exampredictor.org)"]
+].map((g,i)=>({id:g[0].toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/-$/,""),title:g[0],category:g[1],description:g[2],url:g[3],source:g[4]+(g[6]||" via GitHub Pages"),tags:g[5],embeddingStatus:S,added:i}));
 const FEAT=["2048","connect-four","super-mario-bros-level-1","bananabread"].map(id=>G.find(g=>g.id===id));
-const OK=/^https:\/\/[a-z0-9-]+\.github\.io\//; // only known, intended game host
+const OK=/^(https:\/\/[a-z0-9-]+\.github\.io\/|https:\/\/db\.duck\.exampredictor\.org\/html\/)/; // only known, intended game host
 
 // ---- storage ----
 const DEF={anim:true,cols:4,favs:[],recent:[]};
@@ -161,13 +192,15 @@ function views(route){
   if(r==="favs"){const l=G.filter(g=>st.favs.includes(g.id));return l.length?library(l,"Favorites"):h("div",{},h("h1",{style:"font-size:32px"},"Favorites"),empty("No favorites yet. Open a game and tap ☆."))}
   if(r==="categories")return h("div",{},h("h1",{style:"font-size:32px"},"Categories"),h("div",{class:"grid"},cats().map(c=>h("button",{class:"card",onclick:()=>{cat=c;go("all")}},h("div",{class:"cb"},h("b",{},c),h("small",{},G.filter(g=>g.category===c).length+" games"))))));
   if(r==="settings")return settings();
-  if(r==="about")return h("div",{},h("h1",{style:"font-size:32px"},"About"),h("p",{},"Umbra Arcade is a portal. It doesn't host or make any games: each one loads from its own public GitHub Pages site inside a sandboxed iframe."),h("p",{},"All "+G.length+" games are open-source browser games listed in the leereilly/games directory on GitHub. None have been tested in this site's iframe, so some may refuse to load; if one fails, use the link to open it on its own site."),h("p",{style:"color:var(--t2)"},"No accounts, tracking or backend. Favorites, history and settings stay in your browser."));
+  if(r==="about")return h("div",{},h("h1",{style:"font-size:32px"},"About"),h("p",{},"Umbra Arcade is a portal. It doesn't host or make any games: each one loads from its original host inside a sandboxed iframe."),h("p",{},"The first 25 games are open-source browser games from the leereilly/games directory on GitHub; the rest load from a third-party mirror that this site does not control. None have been tested in this site's iframe, so some may refuse to load; if one fails, use the link to open it on its own site."),h("p",{style:"color:var(--t2)"},"No accounts, tracking or backend. Favorites, history and settings stay in your browser."));
   return home();
 }
 function home(){
-  return h("div",{},h("section",{class:"hero"},h("h1",{},"Play in the ",h("span",{style:"color:var(--p2)"},"dark.")),h("p",{},"A quiet hub for open-source browser games. "+G.length+" to play, no downloads."),
-    h("div",{class:"row"},h("button",{class:"pri",onclick:()=>go("all")},"Explore Games"),h("button",{onclick:()=>go("categories")},"Browse categories"),h("button",{onclick:()=>go("play/"+G[Math.floor(Math.random()*G.length)].id)},"Random game"))),
-    h("h2",{},"Featured"),grid(FEAT));
+  return h("section",{class:"splash"},
+    (()=>{const d=h("div",{"aria-hidden":"true"});d.innerHTML='<svg width="130" height="130" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#5B21B6"/><path d="M22 6a11 11 0 1 0 0 20 9 9 0 0 1 0-20z" fill="#08060D"/><circle cx="16" cy="16" r="14" fill="none" stroke="#A78BFA" stroke-width="1.2"/></svg>';return d})(),
+    h("h1",{},"UMBRA ARCADE"),
+    h("p",{},"Open the menu to find your game."),
+    h("button",{class:"pri",onclick:openNav},"☰ Open menu"));
 }
 function settings(){
   const row=(l,d,c)=>h("div",{class:"set"},h("div",{},h("b",{},l),h("div",{style:"color:var(--t2)"},d)),c);
@@ -187,7 +220,7 @@ function renderNav(route){
 function render(){
   const route=location.hash.slice(1)||"home";
   renderNav(route);closeNav();
-  const v=$("#view");v.replaceChildren(views(route));
+  document.body.classList.toggle("home",route==="home");const v=$("#view");v.replaceChildren(views(route));
   document.title=(route.startsWith("play/")?(G.find(g=>g.id===route.slice(5))||{title:"Game"}).title+" · ":"")+"Umbra Arcade";
 }
 function openNav(){$("#nav").classList.add("open");$("#scrim").classList.add("on");$("#menu").setAttribute("aria-expanded","true");$("#nav a").focus()}
