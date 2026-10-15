@@ -22,3 +22,6 @@ Edit the `G` array near the top of the script in `index.html` to add or remove g
 Only `*.github.io` and the mirror host URLs pass the `OK` check in the player; widen that regex if you add other hosts.
 
 Embedding status: every game is **URL found, embedding unverified**. Test each one after deploying and replace any that refuse to load (the site shows a fallback link to the original).
+
+## Thumbnails
+Every card uses original generated artwork (not screenshots). To use your own images instead, put `images/<game-id>.jpg` files in the repo and set `USE_LOCAL_IMAGES=true` in `index.html`; cards without a matching file keep the generated art.

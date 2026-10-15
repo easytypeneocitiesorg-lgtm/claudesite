@@ -129,6 +129,35 @@ const hue=s=>{let n=0;for(const c of s)n=(n*31+c.charCodeAt(0))%360;return 250+n
 const go=p=>{location.hash=p};
 const reduced=matchMedia("(prefers-reduced-motion: reduce)");
 
+
+// ---- original thumbnail art (generated; not screenshots) ----
+const USE_LOCAL_IMAGES=false; // set true and add images/<game-id>.jpg to show your own screenshots
+const MOT={
+bow:'<path d="M38 10Q72 31 38 52" fill="none"/><path d="M38 10V52" fill="none" stroke-width="1.5"/><path d="M26 31H80M72 25l8 6-8 6" fill="none"/>',
+ball:'<circle cx="50" cy="31" r="19" fill="none"/><path d="M31 31h38M50 12c-9 8-9 30 0 38M50 12c9 8 9 30 0 38" fill="none" stroke-width="2"/>',
+slope:'<path d="M8 20L92 54" fill="none"/><path d="M8 20L8 8" fill="none"/><circle cx="46" cy="27" r="8" stroke="none"/>',
+ship:'<path d="M50 8l14 34H36z" stroke="none"/><path d="M36 42l-10 10M64 42l10 10" fill="none"/><circle cx="82" cy="14" r="5" stroke="none"/><circle cx="16" cy="18" r="3" stroke="none"/>',
+car:'<path d="M18 40h64l-8-14H36z" stroke="none"/><circle cx="34" cy="42" r="7" stroke="none" style="fill:#0b0712"/><circle cx="66" cy="42" r="7" stroke="none" style="fill:#0b0712"/><path d="M6 50h88" fill="none" stroke-width="2"/>',
+snake:'<path d="M12 44c14-26 22 6 38-14s26 12 38-12" fill="none" stroke-width="7"/><circle cx="88" cy="18" r="3" stroke="none" style="fill:#0b0712"/>',
+crosshair:'<circle cx="50" cy="31" r="17" fill="none"/><path d="M50 6v14M50 42v14M25 31h14M61 31h14" fill="none"/><circle cx="50" cy="31" r="2" stroke="none"/>',
+blocks:'<rect x="30" y="12" width="16" height="16" rx="3" stroke="none"/><rect x="46" y="12" width="16" height="16" rx="3" stroke="none" opacity=".7"/><rect x="46" y="28" width="16" height="16" rx="3" stroke="none"/><rect x="62" y="28" width="16" height="16" rx="3" stroke="none" opacity=".7"/><rect x="30" y="28" width="16" height="16" rx="3" stroke="none" opacity=".45"/>',
+maze:'<path d="M14 54V14h72v34H34V28h34v10" fill="none" stroke-width="4"/>',
+idle:'<circle cx="50" cy="31" r="9" stroke="none"/><circle cx="32" cy="31" r="6" stroke="none" opacity=".8"/><circle cx="70" cy="31" r="6" stroke="none" opacity=".8"/><path d="M44 24l-8-10M56 24l8-10M44 38l-8 10M56 38l8 10" fill="none" stroke-width="2"/>',
+cube:'<path d="M50 8l30 16v28L50 56 20 52V24z" fill="none"/><path d="M50 8v24l30-8M50 32L20 24M50 32v24" fill="none" stroke-width="2"/>',
+figure:'<circle cx="50" cy="14" r="7" stroke="none"/><path d="M50 22v18M50 28l-14 8M50 28l14-6M50 40l-10 14M50 40l12 12" fill="none"/>',
+pad:'<rect x="16" y="16" width="68" height="32" rx="14" fill="none"/><path d="M34 26v12M28 32h12" fill="none"/><circle cx="64" cy="28" r="3" stroke="none"/><circle cx="72" cy="36" r="3" stroke="none"/>'};
+function motif(g){
+  const k=(g.title+" "+g.tags.join(" ")+" "+g.category).toLowerCase();
+  const R=[["bow",/archer|archery/],["ball",/soccer|football|basketball|baseball|golf/],["slope",/slope|sled|snow/],["ship",/space|invasion|invaders|arashi/],["snake",/snake/],["car",/race|racing|drift|drive|cars|trucks/],["crosshair",/shooter|fps|gun/],["blocks",/tetris|blocks|puzzle|sokoban|numbers|hex|logic|minesweeper|board/],["maze",/maze/],["idle",/idle|clicker/],["cube",/voxel|sandbox|builder|isometric|rpg/],["figure",/ragdoll|stickman|fighting|wrestling|parkour|platformer|jump|trap|swing|survival|arena|battle/]];
+  for(const [m,re] of R)if(re.test(k))return MOT[m];
+  return MOT.pad;
+}
+function art(g){
+  const hv=hue(g.title);let n=0;for(const c of g.id)n=(n*17+c.charCodeAt(0))%997;
+  const dots=[0,1,2].map(i=>`<circle cx="${(n*(i+3)*7)%100}" cy="${(n*(i+5)*3)%62}" r="${3+(n+i*5)%9}" fill="hsla(${hv+40},80%,70%,.12)"/>`).join("");
+  return `<svg viewBox="0 0 100 62" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="g${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${hv},62%,30%)"/><stop offset="1" stop-color="hsl(${hv+35},70%,11%)"/></linearGradient></defs><rect width="100" height="62" fill="url(#g${n})"/>${dots}<g style="fill:rgba(255,255,255,.88);stroke:rgba(255,255,255,.88);stroke-width:3;stroke-linecap:round;stroke-linejoin:round">${motif(g)}</g></svg>`;
+}
+
 // ---- state ----
 let query="",cat="All",sort="az";
 const NAV=[["home","Home"],["all","All Games"],["featured","Featured"],["recent","Recently Played"],["favs","Favorites"],["categories","Categories"],["settings","Settings"],["about","About"]];
@@ -136,7 +165,9 @@ const NAV=[["home","Home"],["all","All Games"],["featured","Featured"],["recent"
 function card(g){
   const hv=hue(g.title);
   return h("button",{class:"card",onclick:()=>go("play/"+g.id),"aria-label":"Play "+g.title},
-    h("div",{class:"thumb",style:`background:linear-gradient(135deg,hsl(${hv},60%,28%),hsl(${hv+30},70%,12%))`,"aria-hidden":"true"},g.title.replace(/[^A-Za-z0-9 ]/g,"").split(" ").slice(0,2).map(w=>w[0]).join("")),
+    (()=>{const t=h("div",{class:"thumb","aria-hidden":"true"});t.innerHTML=art(g);
+      if(USE_LOCAL_IMAGES){const im=h("img",{src:"images/"+g.id+".jpg",alt:"",loading:"lazy",style:"width:100%;height:100%;object-fit:cover"});im.onload=()=>t.replaceChildren(im);}
+      return t})(),
     h("div",{class:"cb"},h("b",{},g.title),h("small",{},g.category+" · "+g.description),g.tags.map(t=>h("span",{class:"tag"},t)),st.favs.includes(g.id)?h("span",{class:"tag"},"★ favorite"):null));
 }
 const grid=l=>l.length?h("div",{class:"grid"},l.map(card)):h("div",{class:"empty"},"No games match.");
